@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -54,61 +53,58 @@ export function DeployEntryForm() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Log a deploy</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Checkout API v2 released"
-              required
-              disabled={isSubmitting}
-            />
-          </div>
+    <div className="flex flex-col gap-4 rounded-lg border border-border/60 p-4">
+      <h2 className="font-heading text-sm font-semibold">Log a deploy</h2>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="description">Description</Label>
-            <Input
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="What changed and why it matters"
-              required
-              disabled={isSubmitting}
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="title">Title</Label>
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Checkout API v2 released"
+            required
+            disabled={isSubmitting}
+          />
+        </div>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="severity">Severity</Label>
-            <Select
-              value={severity}
-              onValueChange={(value) => setSeverity(value as Severity)}
-              disabled={isSubmitting}
-            >
-              <SelectTrigger id="severity">
-                <SelectValue placeholder="Select severity" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="MAJOR">Major</SelectItem>
-                <SelectItem value="MINOR">Minor</SelectItem>
-                <SelectItem value="PATCH">Patch</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="description">Description</Label>
+          <Input
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="What changed and why it matters"
+            required
+            disabled={isSubmitting}
+          />
+        </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="severity">Severity</Label>
+          <Select
+            value={severity}
+            onValueChange={(value) => setSeverity(value as Severity)}
+            disabled={isSubmitting}
+          >
+            <SelectTrigger id="severity" className="w-full">
+              <SelectValue placeholder="Select severity" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="MAJOR">Major</SelectItem>
+              <SelectItem value="MINOR">Minor</SelectItem>
+              <SelectItem value="PATCH">Patch</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Logging..." : "Log deploy"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        {error && <p className="text-sm text-destructive">{error}</p>}
+
+        <Button type="submit" disabled={isSubmitting} className="w-full">
+          {isSubmitting ? "Logging..." : "Log deploy"}
+        </Button>
+      </form>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DeleteEntryButton } from "@/components/delete-entry-button";
 import { cn } from "@/lib/utils";
 
 type Severity = "MAJOR" | "MINOR" | "PATCH";
@@ -13,40 +13,75 @@ type DeployEntry = {
   author: { name: string | null; email: string };
 };
 
-const severityStyles: Record<Severity, string> = {
+const badgeStyles: Record<Severity, string> = {
   MAJOR: "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300",
-  MINOR: "bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-300",
-  PATCH: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
+  MINOR: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
+  PATCH: "bg-muted text-muted-foreground",
 };
+
+const dotStyles: Record<Severity, string> = {
+  MAJOR: "bg-red-500",
+  MINOR: "bg-amber-500",
+  PATCH: "bg-zinc-400 dark:bg-zinc-500",
+};
+
+function formatDateTime(date: Date) {
+  return new Date(date).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
 
 export function DeployEntryList({ entries }: { entries: DeployEntry[] }) {
   if (entries.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        No deploy entries yet. Log the first one above.
+        No deploy entries yet. Log the first one to the left.
       </p>
     );
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      {entries.map((entry) => (
-        <Card key={entry.id}>
-          <CardHeader className="flex flex-row items-start justify-between gap-2">
-            <CardTitle className="text-base">{entry.title}</CardTitle>
-            <Badge className={cn(severityStyles[entry.severity])}>
-              {entry.severity.toLowerCase()}
-            </Badge>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">{entry.description}</p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {entry.author.name ?? entry.author.email} ·{" "}
-              {new Date(entry.createdAt).toLocaleString()}
+    <div className="relative">
+      <div
+        aria-hidden="true"
+        className="absolute top-2 bottom-2 left-[5px] w-px bg-border"
+      />
+      <ol className="flex flex-col gap-6">
+        {entries.map((entry) => (
+          <li key={entry.id} className="relative pl-6">
+            <span
+              aria-hidden="true"
+              className={cn(
+                "absolute top-1.5 left-0 z-10 block size-[11px] rounded-full ring-4 ring-background",
+                dotStyles[entry.severity]
+              )}
+            />
+
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                <h3 className="font-heading text-[15px] font-semibold">
+                  {entry.title}
+                </h3>
+                <Badge className={cn(badgeStyles[entry.severity])}>
+                  {entry.severity.toLowerCase()}
+                </Badge>
+              </div>
+              <DeleteEntryButton id={entry.id} title={entry.title} />
+            </div>
+
+            <p className="mt-1 text-sm text-muted-foreground">
+              {entry.description}
             </p>
-          </CardContent>
-        </Card>
-      ))}
+            <p className="mt-1 text-xs text-muted-foreground/70">
+              {entry.author.name ?? entry.author.email} ·{" "}
+              {formatDateTime(entry.createdAt)}
+            </p>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
