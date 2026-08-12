@@ -34,11 +34,17 @@ function formatDateTime(date: Date) {
   });
 }
 
-export function DeployEntryList({ entries }: { entries: DeployEntry[] }) {
+export function DeployEntryList({
+  entries,
+  emptyMessage,
+}: {
+  entries: DeployEntry[];
+  emptyMessage?: string;
+}) {
   if (entries.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        No deploy entries yet. Log the first one to the left.
+        {emptyMessage ?? "No deploy entries yet. Log the first one to the left."}
       </p>
     );
   }

@@ -15,6 +15,12 @@ import {
 
 type Severity = "MAJOR" | "MINOR" | "PATCH";
 
+const severityLabels: Record<Severity, string> = {
+  MAJOR: "Major",
+  MINOR: "Minor",
+  PATCH: "Patch",
+};
+
 export function DeployEntryForm() {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -89,7 +95,9 @@ export function DeployEntryForm() {
             disabled={isSubmitting}
           >
             <SelectTrigger id="severity" className="w-full">
-              <SelectValue placeholder="Select severity" />
+              <SelectValue placeholder="Select severity">
+                {(value: Severity) => severityLabels[value] ?? value}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="MAJOR">Major</SelectItem>

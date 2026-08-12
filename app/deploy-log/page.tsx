@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { DeployEntryForm } from "@/components/deploy-entry-form";
 import { DeployEntryList } from "@/components/deploy-entry-list";
+import { DeployLogFilters } from "@/components/deploy-log-filters";
 import { LogoutButton } from "@/components/logout-button";
 
 // This page reads fresh data on every request (new entries should show up
@@ -8,6 +9,9 @@ import { LogoutButton } from "@/components/logout-button";
 // without this Next.js would prerender it once at build time and serve
 // stale data.
 export const dynamic = "force-dynamic";
+
+const SEVERITIES = ["MAJOR", "MINOR", "PATCH"] as const;
+type Severity = (typeof SEVERITIES)[number];
 
 function getSinceLastMajorText(entries: { severity: string }[]) {
   if (entries.length === 0) return null;
@@ -23,15 +27,35 @@ function getSinceLastMajorText(entries: { severity: string }[]) {
   return `${majorIndex} deploy${majorIndex === 1 ? "" : "s"} since the last major release`;
 }
 
-export default async function DeployLogPage() {
-  // Direct Prisma call from the server component — avoids an unnecessary
-  // network hop to our own API route for the initial page render.
-  const entries = await prisma.deployEntry.findMany({
+export default async function DeployLogPage(props: PageProps<"/deploy-log">) {
+  const searchParams = await props.searchParams;
+
+  const severityParam = searchParams.severity;
+  const severityFilter = SEVERITIES.includes(severityParam as Severity)
+    ? (severityParam as Severity)
+    : null;
+
+  const sortParam = searchParams.sort;
+  const sortOldestFirst = sortParam === "oldest";
+
+  // Fetch once, newest-first — the "since last major" counter always reads
+  // the full, unfiltered timeline (it describes the team's overall release
+  // cadence), while severity filtering and sort order are applied in memory
+  // to derive what's actually displayed.
+  const allEntries = await prisma.deployEntry.findMany({
     orderBy: { createdAt: "desc" },
     include: { author: { select: { name: true, email: true } } },
   });
 
-  const sinceLastMajorText = getSinceLastMajorText(entries);
+  const sinceLastMajorText = getSinceLastMajorText(allEntries);
+
+  let displayedEntries = severityFilter
+    ? allEntries.filter((entry) => entry.severity === severityFilter)
+    : allEntries;
+
+  if (sortOldestFirst) {
+    displayedEntries = [...displayedEntries].reverse();
+  }
 
   return (
     <div className="mx-auto flex h-dvh w-full max-w-5xl flex-col p-4 py-10">
@@ -53,13 +77,23 @@ export default async function DeployLogPage() {
         <LogoutButton />
       </div>
 
-      <div className="mt-6 grid min-h-0 flex-1 grid-cols-1 gap-8 md:grid-cols-[300px_1fr]">
+      <div className="mt-6 grid min-h-0 flex-1 grid-cols-1 gap-8 md:grid-cols-[330px_1fr]">
         <div className="md:overflow-y-auto">
           <DeployEntryForm />
         </div>
 
-        <div className="min-h-0 md:overflow-y-auto md:pr-2">
-          <DeployEntryList entries={entries} />
+        <div className="flex min-h-0 flex-col md:overflow-hidden">
+          <DeployLogFilters />
+          <div className="min-h-0 flex-1 md:overflow-y-auto md:pr-2">
+            <DeployEntryList
+              entries={displayedEntries}
+              emptyMessage={
+                severityFilter
+                  ? `No ${severityFilter.toLowerCase()} deploys yet.`
+                  : undefined
+              }
+            />
+          </div>
         </div>
       </div>
     </div>
