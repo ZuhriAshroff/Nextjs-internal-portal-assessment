@@ -13,6 +13,11 @@ export async function proxy(request: NextRequest) {
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
+    // getToken defaults secureCookie to false, but NextAuth sets the
+    // __Secure-prefixed cookie whenever the app is served over HTTPS (e.g.
+    // in production on Vercel). Without this, the proxy looks for the wrong
+    // cookie name and treats logged-in users as unauthenticated.
+    secureCookie: process.env.NODE_ENV === "production",
   });
 
   if (!token) {
