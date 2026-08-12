@@ -11,6 +11,7 @@ import {
 import { AppSidebar } from "@/components/app-sidebar";
 import { DeployEntryForm } from "@/components/deploy-entry-form";
 import { DeployEntryList } from "@/components/deploy-entry-list";
+import { DeployEntryTable } from "@/components/deploy-entry-table";
 import { DeployLogFilters } from "@/components/deploy-log-filters";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -34,6 +35,8 @@ export default async function DeployLogPage(props: PageProps<"/deploy-log">) {
 
   const queryParam = searchParams.q;
   const query = typeof queryParam === "string" ? queryParam.trim() : "";
+
+  const view = searchParams.view === "table" ? "table" : "timeline";
 
   // Fetch once, newest-first — the stats and the "since last major" counter
   // always read the full, unfiltered timeline, while severity/search
@@ -123,10 +126,17 @@ export default async function DeployLogPage(props: PageProps<"/deploy-log">) {
             <div className="flex min-h-0 flex-col md:overflow-hidden">
               <DeployLogFilters />
               <div className="min-h-0 flex-1 md:overflow-y-auto md:pr-2">
-                <DeployEntryList
-                  entries={displayedEntries}
-                  emptyMessage={emptyMessage}
-                />
+                {view === "table" ? (
+                  <DeployEntryTable
+                    entries={displayedEntries}
+                    emptyMessage={emptyMessage}
+                  />
+                ) : (
+                  <DeployEntryList
+                    entries={displayedEntries}
+                    emptyMessage={emptyMessage}
+                  />
+                )}
               </div>
             </div>
           </div>

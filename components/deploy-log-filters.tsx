@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
+import { List, Search, Table2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -38,10 +39,11 @@ export function DeployLogFilters() {
 
   const severity = searchParams.get("severity") ?? "ALL";
   const sort = searchParams.get("sort") ?? "newest";
+  const view = searchParams.get("view") === "table" ? "table" : "timeline";
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
 
   function updateParam(
-    key: "severity" | "sort" | "q",
+    key: "severity" | "sort" | "q" | "view",
     value: string | null,
     defaultValue: string
   ) {
@@ -116,6 +118,35 @@ export function DeployLogFilters() {
           ))}
         </SelectContent>
       </Select>
+
+      <div className="ml-auto flex items-center gap-0.5 rounded-lg border border-input p-0.5">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Timeline view"
+          aria-pressed={view === "timeline"}
+          onClick={() => updateParam("view", "timeline", "timeline")}
+          className={
+            view === "timeline" ? "bg-accent text-accent-foreground" : "text-muted-foreground"
+          }
+        >
+          <List className="size-3.5" />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Table view"
+          aria-pressed={view === "table"}
+          onClick={() => updateParam("view", "table", "timeline")}
+          className={
+            view === "table" ? "bg-accent text-accent-foreground" : "text-muted-foreground"
+          }
+        >
+          <Table2 className="size-3.5" />
+        </Button>
+      </div>
     </div>
   );
 }
