@@ -34,3 +34,21 @@ model DeployEntry {
   authorId    String
   author      User     @relation(fields: [authorId], references: [id])
 }
+
+enum ActivityAction {
+  CREATED
+  DELETED
+}
+
+// Deliberately not a foreign-key relation to DeployEntry: this is an audit
+// trail, so a record needs to survive the entry it describes being deleted.
+// Actor/entry details are captured as plain fields at the time of the action.
+model ActivityLog {
+  id         String         @id @default(cuid())
+  action     ActivityAction
+  entryTitle String
+  severity   Severity
+  actorName  String?
+  actorEmail String
+  createdAt  DateTime       @default(now())
+}

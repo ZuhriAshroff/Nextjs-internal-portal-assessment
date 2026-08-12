@@ -1,6 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -35,9 +38,10 @@ export function DeployLogFilters() {
 
   const severity = searchParams.get("severity") ?? "ALL";
   const sort = searchParams.get("sort") ?? "newest";
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
 
   function updateParam(
-    key: "severity" | "sort",
+    key: "severity" | "sort" | "q",
     value: string | null,
     defaultValue: string
   ) {
@@ -48,12 +52,37 @@ export function DeployLogFilters() {
     } else {
       params.set(key, value);
     }
-    const query = params.toString();
-    router.push(query ? `${pathname}?${query}` : pathname);
+    const paramsQuery = params.toString();
+    router.push(paramsQuery ? `${pathname}?${paramsQuery}` : pathname);
   }
 
+  // Debounce the search box so we're not pushing a URL update on every
+  // keystroke — the rest of the filters update immediately since they're
+  // discrete selections, not free text.
+  useEffect(() => {
+    const current = searchParams.get("q") ?? "";
+    if (query === current) return;
+
+    const timeout = setTimeout(() => {
+      updateParam("q", query, "");
+    }, 300);
+
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
   return (
-    <div className="flex shrink-0 items-center gap-2 pb-4">
+    <div className="flex shrink-0 flex-wrap items-center gap-2 pb-4">
+      <div className="relative">
+        <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search deploys..."
+          className="h-7 w-[180px] pl-8 text-sm"
+        />
+      </div>
+
       <Select
         value={severity}
         onValueChange={(value) => updateParam("severity", value, "ALL")}

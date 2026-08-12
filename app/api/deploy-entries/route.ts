@@ -33,5 +33,15 @@ export async function POST(request: Request) {
     },
   });
 
+  await prisma.activityLog.create({
+    data: {
+      action: "CREATED",
+      entryTitle: entry.title,
+      severity: entry.severity,
+      actorName: session.user.name,
+      actorEmail: session.user.email!,
+    },
+  });
+
   return NextResponse.json(entry, { status: 201 });
 }

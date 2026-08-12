@@ -21,5 +21,15 @@ export async function DELETE(
 
   await prisma.deployEntry.delete({ where: { id } });
 
+  await prisma.activityLog.create({
+    data: {
+      action: "DELETED",
+      entryTitle: entry.title,
+      severity: entry.severity,
+      actorName: session.user.name,
+      actorEmail: session.user.email!,
+    },
+  });
+
   return NextResponse.json({ success: true }, { status: 200 });
 }

@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { DeleteEntryButton } from "@/components/delete-entry-button";
 import { cn } from "@/lib/utils";
@@ -55,9 +56,9 @@ export function DeployEntryList({
         aria-hidden="true"
         className="absolute top-2 bottom-2 left-[5px] w-px bg-border"
       />
-      <ol className="flex flex-col gap-6">
+      <ol className="flex flex-col gap-8">
         {entries.map((entry) => (
-          <li key={entry.id} className="relative pl-6">
+          <li key={entry.id} className="relative pl-7">
             <span
               aria-hidden="true"
               className={cn(
@@ -78,13 +79,23 @@ export function DeployEntryList({
               <DeleteEntryButton id={entry.id} title={entry.title} />
             </div>
 
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1.5 text-sm text-muted-foreground">
               {entry.description}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground/70">
-              {entry.author.name ?? entry.author.email} ·{" "}
-              {formatDateTime(entry.createdAt)}
-            </p>
+            <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground/70">
+              <Avatar className="size-4">
+                <AvatarFallback className="bg-secondary text-[9px] text-secondary-foreground">
+                  {(entry.author.name ?? entry.author.email)
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span>
+                {entry.author.name ?? entry.author.email} ·{" "}
+                {formatDateTime(entry.createdAt)}
+              </span>
+            </div>
           </li>
         ))}
       </ol>

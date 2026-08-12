@@ -25,5 +25,10 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/deploy-log/:path*"],
+  matcher: [
+    "/deploy-log/:path*",
+    "/revision-history/:path*",
+    "/overview/:path*",
+    "/team/:path*",
+  ],
 };

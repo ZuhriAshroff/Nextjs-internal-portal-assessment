@@ -59,10 +59,10 @@ export function DeployEntryForm() {
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-border/60 p-4">
+    <div className="flex flex-col gap-5 rounded-lg border border-border/60 p-6">
       <h2 className="font-heading text-sm font-semibold">Log a deploy</h2>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
           <Label htmlFor="title">Title</Label>
           <Input

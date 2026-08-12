@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
+import { LogOut } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,7 +18,8 @@ import { Button } from "@/components/ui/button";
 export function LogoutButton() {
   return (
     <AlertDialog>
-      <AlertDialogTrigger render={<Button variant="outline" />}>
+      <AlertDialogTrigger render={<Button variant="outline" className="w-full" />}>
+        <LogOut className="size-4" />
         Log out
       </AlertDialogTrigger>
       <AlertDialogContent>
