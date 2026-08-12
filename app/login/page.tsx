@@ -1,13 +1,15 @@
 "use client";
 
 import { useRef, useState, Suspense } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Rocket } from "lucide-react";
+import { Eye, EyeOff, Rocket, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+const DEMO_EMAIL = "demo@example.com";
+const DEMO_PASSWORD = "password123";
 
 function LoginForm() {
   const router = useRouter();
@@ -16,6 +18,7 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -216,6 +219,9 @@ function LoginForm() {
             <span className="size-2.5 rounded-full bg-red-400" />
             <span className="size-2.5 rounded-full bg-amber-400" />
             <span className="size-2.5 rounded-full bg-emerald-400" />
+            <span className="ml-1 text-[11px] text-zinc-500 italic">
+              (psst — you can drag these around ↖)
+            </span>
           </div>
           <h2 className="font-heading text-3xl leading-tight font-semibold">
             Every deploy,
@@ -257,27 +263,61 @@ function LoginForm() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isSubmitting}
+                  autoComplete="current-password"
+                  className="pr-9"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  disabled={isSubmitting}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute top-1/2 right-2.5 -translate-y-1/2 text-muted-foreground hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
                 >
-                  Forgot password?
-                </Link>
+                  {showPassword ? (
+                    <EyeOff className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
               </div>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isSubmitting}
-                autoComplete="current-password"
-              />
             </div>
 
             {error && <p className="text-sm text-destructive">{error}</p>}
+
+            <div className="flex items-start gap-2 rounded-lg border border-border/60 bg-muted/40 p-3 text-xs text-muted-foreground">
+              <Sparkles className="mt-0.5 size-3.5 shrink-0" />
+              <p>
+                This is a trial product — visitors can sign in with{" "}
+                <code className="rounded bg-muted px-1 py-0.5 font-mono">
+                  {DEMO_EMAIL}
+                </code>{" "}
+                /{" "}
+                <code className="rounded bg-muted px-1 py-0.5 font-mono">
+                  {DEMO_PASSWORD}
+                </code>
+                .{" "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail(DEMO_EMAIL);
+                    setPassword(DEMO_PASSWORD);
+                  }}
+                  disabled={isSubmitting}
+                  className="font-medium text-foreground underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-50"
+                >
+                  Fill it in for me
+                </button>
+              </p>
+            </div>
 
             <Button type="submit" disabled={isSubmitting} className="w-full">
               {isSubmitting ? "Signing in..." : "Sign in"}

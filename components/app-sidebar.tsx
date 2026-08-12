@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { History, LayoutDashboard, Rocket, Users } from "lucide-react";
-import { LogoutButton } from "@/components/logout-button";
+import { UserMenu } from "@/components/user-menu";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -17,9 +17,6 @@ export function AppSidebar({
   current: (typeof navItems)[number]["key"];
   user: { name?: string | null; email?: string | null };
 }) {
-  const displayName = user.name ?? user.email ?? "Signed in";
-  const initial = (user.name ?? user.email ?? "?").trim().charAt(0).toUpperCase();
-
   return (
     <aside className="hidden w-60 shrink-0 flex-col border-r border-border/60 bg-muted/20 p-4 md:flex">
       <div className="flex items-center gap-2 px-2 py-2">
@@ -52,16 +49,8 @@ export function AppSidebar({
         })}
       </nav>
 
-      <div className="mt-auto flex flex-col gap-3 border-t border-border/60 pt-4">
-        <div className="flex items-center gap-2 px-2">
-          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-medium text-secondary-foreground">
-            {initial}
-          </span>
-          <span className="truncate text-sm text-muted-foreground">
-            {displayName}
-          </span>
-        </div>
-        <LogoutButton />
+      <div className="mt-auto border-t border-border/60 pt-2">
+        <UserMenu user={user} />
       </div>
     </aside>
   );
