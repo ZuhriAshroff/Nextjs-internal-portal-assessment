@@ -1,6 +1,13 @@
 import { Rocket, Sparkles, Zap } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import {
+  SEVERITIES,
+  type Severity,
+  filterAndSortEntries,
+  getEmptyMessage,
+  getSinceLastMajorText,
+} from "@/lib/deploy-log";
 import { AppSidebar } from "@/components/app-sidebar";
 import { DeployEntryForm } from "@/components/deploy-entry-form";
 import { DeployEntryList } from "@/components/deploy-entry-list";
@@ -12,23 +19,6 @@ import { Card, CardContent } from "@/components/ui/card";
 // without this Next.js would prerender it once at build time and serve
 // stale data.
 export const dynamic = "force-dynamic";
-
-const SEVERITIES = ["MAJOR", "MINOR", "PATCH"] as const;
-type Severity = (typeof SEVERITIES)[number];
-
-function getSinceLastMajorText(entries: { severity: string }[]) {
-  if (entries.length === 0) return null;
-
-  // Entries are sorted newest-first, so the first MAJOR entry found is the
-  // most recent one — everything ahead of it in the list shipped since.
-  const majorIndex = entries.findIndex((entry) => entry.severity === "MAJOR");
-
-  if (majorIndex === -1) {
-    return `${entries.length} deploy${entries.length === 1 ? "" : "s"} logged — no major release yet`;
-  }
-
-  return `${majorIndex} deploy${majorIndex === 1 ? "" : "s"} since the last major release`;
-}
 
 export default async function DeployLogPage(props: PageProps<"/deploy-log">) {
   const searchParams = await props.searchParams;
@@ -73,28 +63,13 @@ export default async function DeployLogPage(props: PageProps<"/deploy-log">) {
     },
   ];
 
-  let displayedEntries = severityFilter
-    ? allEntries.filter((entry) => entry.severity === severityFilter)
-    : allEntries;
+  const displayedEntries = filterAndSortEntries(allEntries, {
+    severityFilter,
+    query,
+    sortOldestFirst,
+  });
 
-  if (query) {
-    const q = query.toLowerCase();
-    displayedEntries = displayedEntries.filter(
-      (entry) =>
-        entry.title.toLowerCase().includes(q) ||
-        entry.description.toLowerCase().includes(q)
-    );
-  }
-
-  if (sortOldestFirst) {
-    displayedEntries = [...displayedEntries].reverse();
-  }
-
-  const emptyMessage = query
-    ? `No deploys match "${query}".`
-    : severityFilter
-      ? `No ${severityFilter.toLowerCase()} deploys yet.`
-      : undefined;
+  const emptyMessage = getEmptyMessage({ query, severityFilter });
 
   return (
     <div className="flex h-dvh w-full">

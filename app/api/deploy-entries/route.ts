@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-
-const createDeployEntrySchema = z.object({
-  title: z.string().trim().min(1, "Title is required").max(200),
-  description: z.string().trim().min(1, "Description is required").max(2000),
-  severity: z.enum(["MAJOR", "MINOR", "PATCH"]),
-});
+import { createDeployEntrySchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
   const session = await auth();
