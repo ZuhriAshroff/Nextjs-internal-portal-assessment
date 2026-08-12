@@ -1,8 +1,9 @@
 # Nexus Deploy
 
 A small internal portal: login-gated, with a **Deploy Log** as the core
-section (create/filter/search/sort/delete deploy entries), plus
-**Revision History** (audit trail), **Overview** (stats), and **Team**.
+section (create/edit/filter/search/sort/delete deploy entries, timeline or
+table view), plus **Revision History** (audit trail), **Overview** (stats),
+**Team**, and **Profile**.
 
 **Live**: https://internal-portal-one-livid.vercel.app
 **Demo login**: `demo@example.com` / `password123` (also shown on the login
@@ -25,6 +26,14 @@ Neon, which provisions one and wires up env vars for you.
 ```bash
 openssl rand -base64 32   # for NEXTAUTH_SECRET
 ```
+
+**Each local setup gets its own database.** `npm run db:seed` creates a
+`demo@example.com` user and 3 sample entries in *whatever* database your
+`DATABASE_URL` points at — that's not the same data as the live site. Same
+login everywhere (the seed script always creates that user), but a fresh
+clone won't show someone else's entries or revision history unless you
+point `DATABASE_URL` at their actual database. To see the real, live data,
+use the deployed URL above instead of running locally.
 
 ## Key decisions
 
@@ -66,8 +75,8 @@ npm run test   # Vitest — validation schema + deploy-log filter/sort logic
 
 ## Scope cuts
 
-- No edit or pagination — create/view/delete done well beats several
-  half-built features.
+- No pagination — doesn't matter at seed-data scale, and everything else
+  (create/edit/delete/filter/search/sort) done well beats it done half-built.
 - Single demo user, no signup. "Forgot password" is honest about that too —
   it's a demo credentials note, not a fake email-reset flow.
 
