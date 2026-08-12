@@ -5,14 +5,14 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Note: prisma.config.ts's own `datasource` block (engine: "classic")
+// fully overwrites this one at runtime, directUrl included — this block's
+// url/directUrl are effectively unused while that config is present, but
+// kept here so `prisma format`/editor tooling and anyone reading the
+// schema directly still see accurate datasource info.
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  // Migrations need a session-level advisory lock, which Neon's pooled
-  // (PgBouncer transaction-mode) connection doesn't reliably support —
-  // that's what was causing P1002 lock-timeout errors on deploy. Prisma
-  // routes migrate/introspect commands through directUrl instead, while
-  // the app keeps using the pooled url at runtime.
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 

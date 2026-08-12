@@ -13,5 +13,11 @@ export default defineConfig({
   engine: "classic",
   datasource: {
     url: env("DATABASE_URL"),
+    // This config's datasource fully overwrites schema.prisma's own
+    // datasource block (directUrl included) — setting it here, not there,
+    // is what actually routes migrations through Neon's direct/unpooled
+    // connection instead of the pooled one, which doesn't reliably support
+    // the advisory lock migrations need.
+    directUrl: env("DATABASE_URL_UNPOOLED"),
   },
 });
