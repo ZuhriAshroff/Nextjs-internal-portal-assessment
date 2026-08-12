@@ -1,5 +1,5 @@
 {
-  "name": "internal-portal",
+  "name": "nexus-deploy",
   "version": "0.1.0",
   "private": true,
   "scripts": {

@@ -7,6 +7,7 @@ import { Eye, EyeOff, Rocket, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { APP_NAME } from "@/lib/constants";
 
 const DEMO_EMAIL = "demo@example.com";
 const DEMO_PASSWORD = "password123";
@@ -210,7 +211,7 @@ function LoginForm() {
             <Rocket className="size-4" />
           </span>
           <span className="font-heading text-sm font-semibold">
-            Internal Portal
+            {APP_NAME}
           </span>
         </div>
 
@@ -235,7 +236,7 @@ function LoginForm() {
         </div>
 
         <p className="relative text-xs text-zinc-500">
-          &copy; {new Date().getFullYear()} Internal Portal
+          &copy; {new Date().getFullYear()} {APP_NAME}
         </p>
       </div>
 

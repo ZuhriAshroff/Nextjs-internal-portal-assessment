@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { History, LayoutDashboard, Rocket, Users } from "lucide-react";
 import { UserMenu } from "@/components/user-menu";
+import { APP_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -24,7 +25,7 @@ export function AppSidebar({
           <Rocket className="size-4" />
         </span>
         <span className="font-heading text-sm font-semibold">
-          Internal Portal
+          {APP_NAME}
         </span>
       </div>
 

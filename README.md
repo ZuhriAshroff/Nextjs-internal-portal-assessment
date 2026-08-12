@@ -1,4 +1,4 @@
-# Internal Portal
+# Nexus Deploy
 
 A small internal portal: login-gated, with a **Deploy Log** as the core
 section (create/filter/search/sort/delete deploy entries), plus
