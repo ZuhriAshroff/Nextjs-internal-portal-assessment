@@ -16,6 +16,7 @@ jobs:
     # the deployment pipeline, this is just the quality gate.
     env:
       DATABASE_URL: "postgresql://ci:ci@localhost:5432/ci"
+      DATABASE_URL_UNPOOLED: "postgresql://ci:ci@localhost:5432/ci"
       NEXTAUTH_SECRET: "ci-test-secret"
       NEXTAUTH_URL: "http://localhost:3000"
     steps:
