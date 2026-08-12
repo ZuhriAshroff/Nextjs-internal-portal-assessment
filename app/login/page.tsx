@@ -220,7 +220,7 @@ function LoginForm() {
             <span className="size-2.5 rounded-full bg-amber-400" />
             <span className="size-2.5 rounded-full bg-emerald-400" />
             <span className="ml-1 text-[11px] text-zinc-500 italic">
-              (psst — you can drag these around ↖)
+              (psst - you can drag these around ↖)
             </span>
           </div>
           <h2 className="font-heading text-3xl leading-tight font-semibold">
