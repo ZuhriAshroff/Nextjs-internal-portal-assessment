@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { DeleteEntryButton } from "@/components/delete-entry-button";
+import { EditEntryDialog } from "@/components/edit-entry-dialog";
 import { cn } from "@/lib/utils";
 
 type Severity = "MAJOR" | "MINOR" | "PATCH";
@@ -76,7 +77,15 @@ export function DeployEntryList({
                   {entry.severity.toLowerCase()}
                 </Badge>
               </div>
-              <DeleteEntryButton id={entry.id} title={entry.title} />
+              <div className="flex shrink-0 items-center gap-0.5">
+                <EditEntryDialog
+                  id={entry.id}
+                  title={entry.title}
+                  description={entry.description}
+                  severity={entry.severity}
+                />
+                <DeleteEntryButton id={entry.id} title={entry.title} />
+              </div>
             </div>
 
             <p className="mt-1.5 text-sm text-muted-foreground">

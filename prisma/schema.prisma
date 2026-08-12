@@ -43,6 +43,7 @@ model DeployEntry {
 
 enum ActivityAction {
   CREATED
+  UPDATED
   DELETED
 }
 

@@ -1,4 +1,4 @@
-import { PlusCircle, Trash2 } from "lucide-react";
+import { Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -19,6 +19,27 @@ const badgeStyles: Record<string, string> = {
   MAJOR: "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300",
   MINOR: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
   PATCH: "bg-muted text-muted-foreground",
+};
+
+const actionMeta: Record<
+  string,
+  { label: string; icon: typeof PlusCircle; colorClass: string }
+> = {
+  CREATED: {
+    label: "Created",
+    icon: PlusCircle,
+    colorClass: "text-emerald-600 dark:text-emerald-400",
+  },
+  UPDATED: {
+    label: "Updated",
+    icon: Pencil,
+    colorClass: "text-amber-600 dark:text-amber-400",
+  },
+  DELETED: {
+    label: "Deleted",
+    icon: Trash2,
+    colorClass: "text-red-600 dark:text-red-400",
+  },
 };
 
 export default async function RevisionHistoryPage() {
@@ -70,23 +91,19 @@ export default async function RevisionHistoryPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  events.map((event) => (
+                  events.map((event) => {
+                    const meta = actionMeta[event.action];
+                    return (
                     <TableRow key={event.id}>
                       <TableCell>
                         <span
                           className={cn(
                             "flex items-center gap-1.5 text-xs font-medium",
-                            event.action === "CREATED"
-                              ? "text-emerald-600 dark:text-emerald-400"
-                              : "text-red-600 dark:text-red-400"
+                            meta.colorClass
                           )}
                         >
-                          {event.action === "CREATED" ? (
-                            <PlusCircle className="size-3.5" />
-                          ) : (
-                            <Trash2 className="size-3.5" />
-                          )}
-                          {event.action === "CREATED" ? "Created" : "Deleted"}
+                          <meta.icon className="size-3.5" />
+                          {meta.label}
                         </span>
                       </TableCell>
                       <TableCell className="font-medium">
@@ -109,7 +126,8 @@ export default async function RevisionHistoryPage() {
                         })}
                       </TableCell>
                     </TableRow>
-                  ))
+                    );
+                  })
                 )}
               </TableBody>
             </Table>
