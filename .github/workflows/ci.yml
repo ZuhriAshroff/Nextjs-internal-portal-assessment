@@ -31,6 +31,12 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # tsc needs Next's generated route types (PageProps, RouteContext,
+      # LayoutProps, etc.), which only exist after next dev/build/typegen
+      # has run once.
+      - name: Generate Next.js types
+        run: npx next typegen
+
       - name: Type check
         run: npx tsc --noEmit
 
