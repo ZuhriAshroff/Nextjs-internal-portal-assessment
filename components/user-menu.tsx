@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { LogOut } from "lucide-react";
+import { LogOut, UserRound } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -59,8 +60,14 @@ export function UserMenu({
           )}
         </div>
         <DropdownMenuSeparator />
+        <DropdownMenuItem render={<Link href="/profile" />}>
+          <UserRound className="size-4" />
+          View profile
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <AlertDialog>
           <AlertDialogTrigger
+            nativeButton={false}
             render={
               <DropdownMenuItem variant="destructive" closeOnClick={false} />
             }

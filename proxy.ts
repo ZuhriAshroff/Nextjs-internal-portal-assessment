@@ -35,5 +35,6 @@ export const config = {
     "/revision-history/:path*",
     "/overview/:path*",
     "/team/:path*",
+    "/profile/:path*",
   ],
 };

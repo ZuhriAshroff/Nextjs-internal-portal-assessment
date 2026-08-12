@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { History, LayoutDashboard, Rocket, Users } from "lucide-react";
+import { History, LayoutDashboard, Rocket, UserRound, Users } from "lucide-react";
 import { UserMenu } from "@/components/user-menu";
 import { APP_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ const navItems = [
   { key: "revision-history", label: "Revision History", href: "/revision-history", icon: History },
   { key: "overview", label: "Overview", href: "/overview", icon: LayoutDashboard },
   { key: "team", label: "Team", href: "/team", icon: Users },
+  { key: "profile", label: "Profile", href: "/profile", icon: UserRound },
 ] as const;
 
 export function AppSidebar({
